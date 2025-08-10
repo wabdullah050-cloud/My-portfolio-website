@@ -1,9 +1,9 @@
 console.log("JavaScript connected ✅");
 
-// DOM test: change header background
+// Change header background for testing
 document.querySelector("header").style.backgroundColor = "#444";
 
-// DOM test: popup alert
+// Test popup alert
 alert("Hello from JavaScript!");
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -19,11 +19,41 @@ document.addEventListener("DOMContentLoaded", () => {
     toggleButton.style.border = "none";
     toggleButton.style.cursor = "pointer";
 
-    // Insert button just before the nav element
     nav.parentNode.insertBefore(toggleButton, nav);
 
     toggleButton.addEventListener("click", () => {
       nav.classList.toggle("hidden");
+    });
+  }
+
+  // CONTACT FORM SUBMIT HANDLER
+  const form = document.querySelector("form");
+  if (form) {
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const name = document.querySelector('input[placeholder="Your Name"]').value;
+      const email = document.querySelector('input[placeholder="Your Email"]').value;
+      const message = document.querySelector('textarea[placeholder="Your Message"]').value;
+
+      try {
+        const res = await fetch("http://127.0.0.1:5000/api/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, message }),
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          alert("Message sent successfully!");
+          form.reset();
+        } else {
+          alert("Something went wrong.");
+        }
+      } catch (err) {
+        alert("Error sending message!");
+        console.error(err);
+      }
     });
   }
 });
